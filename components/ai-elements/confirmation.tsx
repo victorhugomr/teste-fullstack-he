@@ -48,6 +48,16 @@ type ToolUIPartApproval =
   | "approval-responded"
   | "output-denied";
 
+  const STATE_LABELS: Record<ExtendedState, string> = {
+    "input-streaming": "Pending",
+    "input-available": "Running",
+    "approval-requested": "Awaiting Approval",
+    "approval-responded": "Responded",
+    "output-available": "Completed",
+    "output-error": "Error",
+    "output-denied": "Denied",
+  };
+
 type ConfirmationContextValue = {
   approval: ToolUIPartApproval;
   state: ExtendedState;
