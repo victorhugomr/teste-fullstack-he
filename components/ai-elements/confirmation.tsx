@@ -39,28 +39,9 @@ type ToolUIPartApproval =
     }
   | undefined;
 
-  type ExtendedState =
-  | "input-streaming"
-  | "input-available"
-  | "output-available"
-  | "output-error"
-  | "approval-requested"
-  | "approval-responded"
-  | "output-denied";
-
-  const STATE_LABELS: Record<ExtendedState, string> = {
-    "input-streaming": "Pending",
-    "input-available": "Running",
-    "approval-requested": "Awaiting Approval",
-    "approval-responded": "Responded",
-    "output-available": "Completed",
-    "output-error": "Error",
-    "output-denied": "Denied",
-  };
-
 type ConfirmationContextValue = {
   approval: ToolUIPartApproval;
-  state: ExtendedState;
+  state: ToolUIPart["state"];
 };
 
 const ConfirmationContext = createContext<ConfirmationContextValue | null>(
@@ -79,7 +60,7 @@ const useConfirmation = () => {
 
 export type ConfirmationProps = ComponentProps<typeof Alert> & {
   approval?: ToolUIPartApproval;
-  state: ExtendedState;
+  state: ToolUIPart["state"];
 };
 
 export const Confirmation = ({
@@ -116,7 +97,7 @@ export const ConfirmationRequest = ({ children }: ConfirmationRequestProps) => {
   const { state } = useConfirmation();
 
   // Only show when approval is requested
-  if (state as string !== "approval-requested") {
+  if (state !== "approval-requested") {
     return null;
   }
 
@@ -135,8 +116,8 @@ export const ConfirmationAccepted = ({
   // Only show when approved and in response states
   if (
     !approval?.approved ||
-    (state as string !== "approval-responded" &&
-      state as string !== "output-denied" &&
+    (state !== "approval-responded" &&
+      state !== "output-denied" &&
       state !== "output-available")
   ) {
     return null;
@@ -157,8 +138,8 @@ export const ConfirmationRejected = ({
   // Only show when rejected and in response states
   if (
     approval?.approved !== false ||
-    (state as string !== "approval-responded" &&
-      state as string !== "output-denied" &&
+    (state !== "approval-responded" &&
+      state !== "output-denied" &&
       state !== "output-available")
   ) {
     return null;
@@ -176,7 +157,7 @@ export const ConfirmationActions = ({
   const { state } = useConfirmation();
 
   // Only show when approval is requested
-  if (state as string !== "approval-requested") {
+  if (state !== "approval-requested") {
     return null;
   }
 
